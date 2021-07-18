@@ -131,7 +131,7 @@ class Game{
     
     createColliders(){
         const geometry = new THREE.BoxGeometry(500, 400, 500);
-        const material = new THREE.MeshBasicMaterial({color:0x222222, wireframe:true});
+        const material = new THREE.MeshBasicMaterial({color:0x222222, wireframe:false});
         
         this.colliders = [];
         
@@ -154,7 +154,7 @@ class Game{
     
     movePlayer(dt){
 
-		console.log(dt);
+		//console.log(dt);
 
 		const pos = this.player.object.position.clone();
 		pos.y += 60;
@@ -316,11 +316,19 @@ class Game{
 		
 		requestAnimationFrame( function(){ game.animate(); } );
 
+		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+
 		if (this.player.cameras!=undefined && this.player.cameras.active!=undefined){
 			this.camera.position.lerp(this.player.cameras.active.getWorldPosition(new THREE.Vector3()), 0.05);
 			const pos = this.player.object.position.clone();
 			pos.y += 100;
 			this.camera.lookAt(pos);
+
+			this.controls.autoRotate = true;
+			this.controls.target.set( 0, 0.5, 0 );
+			this.controls.update();
+	
+			this.controls.enableDamping = true;
 		}
 
 
@@ -335,12 +343,10 @@ class Game{
 		
 		if (this.player.move !== undefined) {
 			this.movePlayer(dt);
-
 			this.camera.position.lerp(this.player.cameras.active.getWorldPosition(new THREE.Vector3()), 0.05);
 			const pos = this.player.object.position.clone();
 			pos.y += 100;
 			this.camera.lookAt(pos);
-
 		};
 
         
